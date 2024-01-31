@@ -31,7 +31,47 @@ string BaseAction::getStrStatus() const{
 
 //----------SimulateStep----------
 
-//TODO: implement 
+SimulateStep::SimulateStep(int numOfSteps) :BaseAction(), numOfSteps(numOfSteps){} 
+
+void SimulateStep::act(WareHouse &wareHouse){
+    for(int i =0; i< numOfSteps; i++){
+        for(Order * o : wareHouse.getPendingOrders()){
+            for(Volunteer * v: wareHouse.getVolunteers()){
+                if(v->canTakeOrder(*o)){
+                    v->acceptOrder(*o);
+                    o->changeStatus();
+                    wareHouse.mooveOrder(*o);
+                    break;
+                }
+            }
+        }
+
+        for(Volunteer * v: wareHouse.getVolunteers()){
+                v->step();
+        }
+
+        for (Volunteer * v : wareHouse.getVolunteers()){
+            if(v->getHasJustFinished()){
+                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId()));
+            }
+        }
+
+        for (Volunteer * v : wareHouse.getVolunteers()){
+            if(!v->hasOrdersLeft()){
+                wareHouse.deleteVolunteer(v->getId());
+            }
+        }
+
+    }// num of steps that the func is doing
+}
+
+string SimulateStep::toString() const{
+    return "step " + std::to_string(numOfSteps) + " "+ getStrStatus();
+}
+
+SimulateStep * SimulateStep::clone() const{
+    return new SimulateStep(*this);
+}
 
 //----------AddOrder----------
 
