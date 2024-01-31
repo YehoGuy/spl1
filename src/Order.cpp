@@ -62,3 +62,8 @@ const string Order::toString() const{
 
     return str;
 }
+
+
+Order * Order::clone(){
+    return new Order(*this);
+}

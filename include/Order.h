@@ -31,6 +31,8 @@ class Order {
         //added for step
         void changeStatus();
 
+        Order * clone();
+
     private:
         const int id;
         const int customerId;
