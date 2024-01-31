@@ -75,7 +75,7 @@ void SimulateStep::act(WareHouse &wareHouse){
 
         //delete limited volunteers who reached limit
         for (Volunteer * v : wareHouse.getVolunteers()){
-            if(!v->hasOrdersLeft()){
+            if(!v->hasOrdersLeft() && !v->isBusy()){
                 wareHouse.deleteVolunteer(v->getId());
             }
         }
