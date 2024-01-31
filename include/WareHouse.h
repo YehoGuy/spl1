@@ -34,6 +34,13 @@ class WareHouse {
         int assignOrderId();
         // (Yonatan)
         bool doesVolunteerExists(int id) const;
+        vector<BaseAction*> getActionsLog() const;
+        vector<Volunteer*> getVolunteers() const;
+        vector<Order*> getPendingOrders() const;
+        vector<Order*> getInProcessOrders() const;
+        vector<Order*> getCompletedOrders() const;
+        vector<Customer*> getCustomers() const;
+
 
     private:
         bool isOpen;
