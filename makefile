@@ -1,4 +1,4 @@
-# All Targets
+#
 
 all: clean compile link check_leaks
 
@@ -17,9 +17,8 @@ compile:
 	g++ -g -Wall -Weffc++ -c -o bin/main.o src/main.cpp
 	
 link:
-	g++ -o bin/program bin/Customer.o bin/Volunteer.o bin/Order.o bin/Action.o bin/WareHouse.o bin/main.o
+	g++ -o bin/warehouse bin/Customer.o bin/Volunteer.o bin/Order.o bin/Action.o bin/WareHouse.o bin/main.o
 
-check_leaks:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./bin/program
+
 
 

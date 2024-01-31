@@ -7,7 +7,8 @@
 //-----------------class WareHouse-----------------
 
 WareHouse::WareHouse(const string& configFilePath): 
-isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers()
+isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actionsLog(), volunteers(), pendingOrders(),
+ inProcessOrders(), completedOrders(), customers()
 {
     string line;
     std::ifstream file(configFilePath);
