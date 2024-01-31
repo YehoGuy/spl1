@@ -55,6 +55,7 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
 
 
 void WareHouse::start() {
+    std::cout << "Warehouse is open!" << std::endl;
     while (isOpen)
     {
         string input;
