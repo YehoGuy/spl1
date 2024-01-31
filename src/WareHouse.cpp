@@ -1,6 +1,7 @@
 #include "../include/WareHouse.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 //-----------------class WareHouse-----------------
 
@@ -54,7 +55,67 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
 
 
 void WareHouse::start() {
-    isOpen = true; //? whileloop
+    while (isOpen)
+    {
+        string input;
+        BaseAction* action;
+        std::getline(std::cin, input);
+        std::istringstream iss(input);
+
+        std::vector<string> line;
+        string word;
+        while (iss >> word) {
+            line.push_back(word);
+        }
+
+        word = line[0];
+        
+        if(word == "step"){
+            action = new SimulateStep(std::stoi(line[1]));
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if( word == "order"){
+            action = new AddOrder(std::stoi(line[1]));
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "customer"){
+            action = new AddCustomer(line[1], line[2],std::stoi(line[3]),std::stoi(line[4]));
+            action->act((*this));
+            actionsLog.push_back(action);   
+        }else if(word == "orderStatus"){
+            action = new PrintOrderStatus(std::stoi(line[1]));
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "customerStatus"){
+            action = new PrintCustomerStatus(std::stoi(line[1]));
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "volunteerStatus"){
+            action = new PrintVolunteerStatus(std::stoi(line[1]));
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "log"){
+            action = new PrintActionsLog();
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "close"){
+            action = new Close();
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "backup"){
+            action = new BackupWareHouse();
+            action->act((*this));
+            actionsLog.push_back(action);
+        }else if(word == "restore"){
+            action = new RestoreWareHouse();
+            action->act((*this));
+            actionsLog.push_back(action);
+        }
+        else{
+            printf("Invalid input\n");
+        }
+        
+    }
 }
 
 void WareHouse::addOrder(Order* order) {
@@ -234,22 +295,27 @@ vector<Customer*> WareHouse::getCustomers() const {
     return customers;
 }
 
-void WareHouse::mooveOrder(const Order& order) { 
-    if (order.getStatus() == OrderStatus::COLLECTING) {
-        Order* p = removePendingOrder(order.getId());
-        pendingOrders.push_back(p);
-    }
-    else if (order.getStatus() == OrderStatus::DELIVERING) {
-        Order* p = removePendingOrder(order.getId());
-        inProcessOrders.push_back(p);
-    }
-    else if (order.getStatus() == OrderStatus::COMPLETED) {
-        throw std::invalid_argument("mooveOrder: Order already completed "+std::to_string(order.getId()));
-    }
-    else {
-        throw std::invalid_argument("Order status is not valid");
-    }
+void WareHouse::pickedUpByCollector(int orderId) {
+    Order* order = removePendingOrder(orderId);
+    inProcessOrders.push_back(order);
 }
+
+void WareHouse::finishedCollecting(int orderId) {
+    Order* order = removeInProcessOrder(orderId);
+    pendingOrders.push_back(order);
+}
+
+void WareHouse::pickedUpByDriver(int orderId) {
+    Order* order = removePendingOrder(orderId);
+    inProcessOrders.push_back(order);
+}
+
+void WareHouse::finishedDelivering(int orderId) {
+    Order* order = removeInProcessOrder(orderId);
+    completedOrders.push_back(order);
+}
+
+
 
 //TODO: rule of 5
 

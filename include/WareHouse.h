@@ -29,7 +29,7 @@ class WareHouse {
         //--added for actions(Guy)--
         bool doesCustomerExist(int customerId) const;
         void addCustomer(Customer* customer);
-        bool doesOrderExist(int orderId) const; //search
+        bool doesOrderExist(int orderId) const; 
         int assignCustomerId();
         int assignVolunteerId();
         int assignOrderId();
@@ -42,8 +42,11 @@ class WareHouse {
         vector<Order*> getInProcessOrders() const;
         vector<Order*> getCompletedOrders() const;
         vector<Customer*> getCustomers() const;
-        void mooveOrder(const Order & order); // moves order from vector to  next vector depending on its status (Collectenig to inProccses compleated to finished etc)
-
+        
+        void pickedUpByCollector(int orderId);
+        void finishedCollecting(int orderId);
+        void pickedUpByDriver(int orderId);
+        void finishedDelivering(int orderId);
 
     private:
         bool isOpen;
