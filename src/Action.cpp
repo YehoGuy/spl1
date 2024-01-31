@@ -52,7 +52,7 @@ void SimulateStep::act(WareHouse &wareHouse){
 
         for (Volunteer * v : wareHouse.getVolunteers()){
             if(v->getHasJustFinished()){
-                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId())); //not true
+                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId())); 
             }
         }
 

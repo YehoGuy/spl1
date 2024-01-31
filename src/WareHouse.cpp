@@ -47,9 +47,11 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
             // Process the words as needed
     }
 
-
     file.close();
 }
+
+
+
 
 void WareHouse::start() {
     isOpen = true; //? whileloop
@@ -109,7 +111,8 @@ void WareHouse::close() {
 }
 
 void WareHouse::open() {
-    isOpen = true; //??
+    isOpen = true; 
+    this -> start();
 }
 
 //-----------------added for actions(Guy)-----------------
@@ -231,13 +234,9 @@ vector<Customer*> WareHouse::getCustomers() const {
     return customers;
 }
 
-void WareHouse::mooveOrder(const Order& order) { //check that it does this action before changing the order status
-    if (order.getStatus() == OrderStatus::PENDING) { // TODO: a mess check woith yonatan
+void WareHouse::mooveOrder(const Order& order) { 
+    if (order.getStatus() == OrderStatus::COLLECTING) {
         Order* p = removePendingOrder(order.getId());
-        inProcessOrders.push_back(p);
-    }
-    else if (order.getStatus() == OrderStatus::COLLECTING) {
-        Order* p = removeInProcessOrder(order.getId());
         pendingOrders.push_back(p);
     }
     else if (order.getStatus() == OrderStatus::DELIVERING) {
@@ -251,4 +250,6 @@ void WareHouse::mooveOrder(const Order& order) { //check that it does this actio
         throw std::invalid_argument("Order status is not valid");
     }
 }
+
+//TODO: rule of 5
 
