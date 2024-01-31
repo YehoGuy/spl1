@@ -33,6 +33,7 @@ class WareHouse {
         int assignVolunteerId();
         int assignOrderId();
         // (Yonatan)
+        void deleteVolunteer(int volID);
         bool doesVolunteerExists(int id) const;
         vector<BaseAction*> getActionsLog() const;
         vector<Volunteer*> getVolunteers() const;
@@ -40,6 +41,7 @@ class WareHouse {
         vector<Order*> getInProcessOrders() const;
         vector<Order*> getCompletedOrders() const;
         vector<Customer*> getCustomers() const;
+        void mooveOrder(const Order & order); // moves order from vector to  next vector depending on its status (Collectenig to inProccses compleated to finished etc)
 
 
     private:

@@ -15,6 +15,23 @@ int Order::getCollectorId() const{ return collectorId; }
 int Order::getDriverId() const{ return driverId; }
 OrderStatus Order::getStatus() const{ return status; }
 
+void Order::changeStatus(){
+    switch (getStatus())
+    {
+    case OrderStatus::PENDING:
+        status = OrderStatus::COLLECTING;
+        break;
+    case OrderStatus::COLLECTING:
+        status = OrderStatus::DELIVERING;
+        break;
+    case OrderStatus::DELIVERING:
+        status = OrderStatus::COMPLETED;
+        break;
+    default:
+        break;
+    }
+}
+
 int Order::getDistance() const {
     return distance;
 }

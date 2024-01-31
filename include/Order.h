@@ -28,6 +28,8 @@ class Order {
         OrderStatus getStatus() const;
         const string toString() const;
         int getDistance() const;
+        //added for step
+        void changeStatus();
 
     private:
         const int id;
