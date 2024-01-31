@@ -320,5 +320,217 @@ void WareHouse::finishedDelivering(int orderId) {
 
 
 
-//TODO: rule of 5
+//rule of 5
+/*bool isOpen;
+        vector<BaseAction*> actionsLog;
+        vector<Volunteer*> volunteers;
+        vector<Order*> pendingOrders;
+        vector<Order*> inProcessOrders;
+        vector<Order*> completedOrders;
+        vector<Customer*> customers;
+        int customerCounter; //For assigning unique customer IDs
+        int volunteerCounter; //For assigning unique volunteer IDs
+        //--added for actions(Guy)--
+        int orderCounter; //For assigning unique order IDs
+      */
 
+WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), customerCounter(other.customerCounter), 
+    volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter) {
+    if(this != &other ){
+        for(BaseAction * action : other.actionsLog){
+            actionsLog.push_back(action->clone());
+        }
+
+        for(Volunteer * v : other.volunteers){
+            volunteers.push_back(v->clone());
+        }
+
+        for(Order * o  : other.pendingOrders){
+            pendingOrders.push_back(o->clone());
+        }
+
+        for(Order * o : other.inProcessOrders){
+            inProcessOrders.push_back(o->clone());
+        }
+        
+        for(Order  * o  : other.completedOrders){
+            completedOrders.push_back(o->clone());
+        }
+        
+        for(Customer * c : other.customers){
+            customers.push_back(c->clone());
+        }
+    }       
+}
+
+
+WareHouse::~WareHouse(){
+    for (BaseAction* action : actionsLog) {
+            delete action;
+        }
+        for (Volunteer* volunteer : volunteers) {
+            delete volunteer;
+        }
+        for (Order* order : pendingOrders) {
+            delete order;
+        }
+        for (Order* order : inProcessOrders) {
+            delete order;
+        }
+        for (Order* order : completedOrders) {
+            delete order;
+        }
+        for (Customer* customer : customers) {
+            delete customer;
+        }
+}
+
+
+WareHouse& WareHouse::operator=(const WareHouse& other){
+    if(this != &other ){
+
+        isOpen =other.isOpen;
+        customerCounter = other.customerCounter;
+        volunteerCounter = other.volunteerCounter; 
+        orderCounter =other.orderCounter; 
+        
+        for (BaseAction* action : actionsLog) {
+            delete action;
+        }
+        for (Volunteer* volunteer : volunteers) {
+            delete volunteer;
+        }
+        for (Order* order : pendingOrders) {
+            delete order;
+        }
+        for (Order* order : inProcessOrders) {
+            delete order;
+        }
+        for (Order* order : completedOrders) {
+            delete order;
+        }
+        for (Customer* customer : customers) {
+            delete customer;
+        }
+    
+    
+        for(BaseAction * action : other.actionsLog){
+            actionsLog.push_back(action->clone());
+        }
+
+        for(Volunteer * v : other.volunteers){
+            volunteers.push_back(v->clone());
+        }
+
+        for(Order * o  : other.pendingOrders){
+            pendingOrders.push_back(o->clone());
+        }
+
+        for(Order * o : other.inProcessOrders){
+            inProcessOrders.push_back(o->clone());
+        }
+        
+        for(Order  * o  : other.completedOrders){
+            completedOrders.push_back(o->clone());
+        }
+        
+        for(Customer * c : other.customers){
+            customers.push_back(c->clone());
+        }
+    }
+    return *this;
+}
+
+WareHouse::WareHouse(WareHouse&& other) noexcept : isOpen(other.isOpen), customerCounter(other.customerCounter)
+, volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter) , customers(other.customers), 
+    completedOrders(other.completedOrders), inProcessOrders(other.inProcessOrders), pendingOrders(other.pendingOrders),volunteers(other.volunteers),
+    actionsLog(other.actionsLog) {
+
+    if(this != &other ){
+        for(int i =0; i< other.actionsLog.size(); i++){
+            other.actionsLog[i] = nullptr;
+        }
+
+        for(int i =0; i< other.volunteers.size(); i++){
+            other.volunteers[i] = nullptr;
+        }
+
+        for(int i =0; i< other.pendingOrders.size(); i++){
+            other.pendingOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.inProcessOrders.size(); i++){
+            other.inProcessOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.completedOrders.size(); i++){
+            other.completedOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.customers.size(); i++){
+            other.actionsLog[i] = nullptr;
+        }
+    }
+}
+
+WareHouse& WareHouse::operator=(WareHouse&& other) noexcept{ 
+    if(this != &other ){
+        
+        for (BaseAction* action : actionsLog) {
+            delete action;
+        }
+        for (Volunteer* volunteer : volunteers) {
+            delete volunteer;
+        }
+        for (Order* order : pendingOrders) {
+            delete order;
+        }
+        for (Order* order : inProcessOrders) {
+            delete order;
+        }
+        for (Order* order : completedOrders) {
+            delete order;
+        }
+        for (Customer* customer : customers) {
+            delete customer;
+        }
+
+        isOpen =other.isOpen;
+        customerCounter = other.customerCounter;
+        volunteerCounter = other.volunteerCounter; 
+        orderCounter =other.orderCounter; 
+        customers =other.customers; 
+        completedOrders =other.completedOrders; 
+        inProcessOrders =other.inProcessOrders;
+        pendingOrders =other.pendingOrders;
+        volunteers =other.volunteers;
+        actionsLog =other.actionsLog;
+
+
+        for(int i =0; i< other.actionsLog.size(); i++){
+            other.actionsLog[i] = nullptr;
+        }
+
+        for(int i =0; i< other.volunteers.size(); i++){
+            other.volunteers[i] = nullptr;
+        }
+
+        for(int i =0; i< other.pendingOrders.size(); i++){
+            other.pendingOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.inProcessOrders.size(); i++){
+            other.inProcessOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.completedOrders.size(); i++){
+            other.completedOrders[i] = nullptr;
+        }
+
+        for(int i =0; i< other.customers.size(); i++){
+            other.actionsLog[i] = nullptr;
+        }
+    }
+
+    return *this;
+}

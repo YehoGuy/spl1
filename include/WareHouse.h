@@ -47,6 +47,20 @@ class WareHouse {
         void pickedUpByDriver(int orderId);
         void finishedDelivering(int orderId);
 
+        //rule of five
+        //copy
+        //ass
+        //moveass
+        //destractor
+        //moveConstractor
+
+        WareHouse (const WareHouse & other);
+        ~WareHouse();
+        WareHouse& operator=(const WareHouse& other);
+        WareHouse(WareHouse&& other) noexcept;
+        WareHouse& operator=(WareHouse&& other) noexcept;
+
+
     private:
         bool isOpen;
         vector<BaseAction*> actionsLog;
