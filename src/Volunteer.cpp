@@ -26,15 +26,6 @@ bool Volunteer::isBusy() const{
 }
 
 
-string Volunteer::toString() const{
-    string str=
-    "customerId: "+to_string(getId())+"\n"+
-    "customerName: "+getName() +"\n"+
-    "compleatedOrderId: "+(getCompletedOrderId() < 0  ? "None" : to_string(getCompletedOrderId()))+"\n"+ 
-    "ActiveOrderId: "+ (getActiveOrderId() < 0  ? "None" : to_string(getActiveOrderId())) +"\n";
-    
-    return str;
-}
 
 //-----------------class CollectorVolunteer------------------
 
@@ -56,14 +47,13 @@ int CollectorVolunteer::getTimeLeft() const{
 bool CollectorVolunteer::decreaseCoolDown(){
     if(timeLeft > 0){
         timeLeft --;
-        return true;
     }
-    return false;
+    return getTimeLeft() == 0;
 }
 
 void CollectorVolunteer::step(){
-    decreaseCoolDown();
-    if(timeLeft ==0){
+    
+    if(decreaseCoolDown() && activeOrderId != NO_ORDER){
         completedOrderId = activeOrderId;
         activeOrderId = NO_ORDER;
     }
@@ -73,7 +63,7 @@ bool CollectorVolunteer::hasOrdersLeft() const {
     return true;
 }
 
-bool CollectorVolunteer::canTakeOrder(const Order &order) const{ ///TODO: to Yonatan - why is this not making use of order
+bool CollectorVolunteer::canTakeOrder(const Order &order) const{
     return activeOrderId == NO_ORDER && timeLeft == 0; //was only timeleft==0
 }
 
@@ -86,8 +76,13 @@ void CollectorVolunteer::acceptOrder(const Order &order) {
 
  
 
-string CollectorVolunteer::toString() const{ ///TODO: fix Yonatan 
-    // i deleted contents beacause it was litteraly a copy of ordertostring and it cause errors
+string CollectorVolunteer::toString() const{  
+    return "volunteerID: "+to_string(getId())+"\n"+
+    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
+    "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
+    "OrdersLeft: "+ "No Limit" +"\n";
+
 }
 
 //-----------------class LimitedCollectorVolunteer------------------
@@ -96,16 +91,8 @@ LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, const string &name,
 : CollectorVolunteer(id,name,coolDown) , maxOrders(maxOrders) ,ordersLeft(maxOrders){}
  
  
-LimitedCollectorVolunteer * LimitedCollectorVolunteer::clone() const{ ////notice yonatan we have default copy constructor
-    LimitedCollectorVolunteer *retVol = new LimitedCollectorVolunteer(getId(), getName(), getCoolDown(), getMaxOrders());
-
-    for(int i =0; i< (getCoolDown() - getTimeLeft()); i++){
-            (*retVol).decreaseCoolDown();
-    }// decreses time
-
-    (*retVol).ordersLeft =  getNumOrdersLeft();
-
-    return retVol;
+LimitedCollectorVolunteer * LimitedCollectorVolunteer::clone() const{
+    return new LimitedCollectorVolunteer(*this);
 }
 
 bool LimitedCollectorVolunteer::hasOrdersLeft() const {
@@ -114,8 +101,13 @@ bool LimitedCollectorVolunteer::hasOrdersLeft() const {
 
 
 void LimitedCollectorVolunteer::acceptOrder(const Order &order) {
-    CollectorVolunteer::acceptOrder(order);
-    ordersLeft --;
+    if(canTakeOrder(order)){
+        CollectorVolunteer::acceptOrder(order);
+    }
+}
+
+bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const{
+    return activeOrderId == NO_ORDER && getTimeLeft() == 0 && getNumOrdersLeft() >0;
 }
 
 int LimitedCollectorVolunteer::getMaxOrders() const{
@@ -124,6 +116,14 @@ int LimitedCollectorVolunteer::getMaxOrders() const{
         
 int LimitedCollectorVolunteer::getNumOrdersLeft() const{
     return ordersLeft;
+}
+
+string LimitedCollectorVolunteer::toString() const{
+    return "volunteerID: "+to_string(getId())+"\n"+
+    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
+    "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
+    "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
 }
 
 //-----------------class DriverVolunteer------------------
@@ -166,7 +166,8 @@ bool DriverVolunteer::hasOrdersLeft() const {
 }
 
 bool DriverVolunteer::canTakeOrder(const Order &order) const {
-    if(getMaxDistance() <= order.getDistance() && hasOrdersLeft() && getDistanceLeft() == 0){
+    if(getMaxDistance() >= order.getDistance() && hasOrdersLeft() 
+        && getDistanceLeft() == 0 && getActiveOrderId() ==NO_ORDER){
         return true;
     }
     return false;
@@ -174,8 +175,7 @@ bool DriverVolunteer::canTakeOrder(const Order &order) const {
 void DriverVolunteer::acceptOrder(const Order &order) {
      if(canTakeOrder(order)){   
         activeOrderId = order.getId();     
-         distanceLeft = order.getDistance();
-        activeOrderId = order.getId(); 
+        distanceLeft = order.getDistance();
     }
    
 } // Assign distanceLeft to order's distance
@@ -190,12 +190,12 @@ void DriverVolunteer::step() {
 } 
 
 string DriverVolunteer::toString() const {
-    string str = Volunteer::toString() +
-    "maxDIstance: "+ to_string(getMaxDistance()) +"\n" +
-    "distancePerStep: "+ to_string(getDistancePerStep())+ "\n" +
-    "distanceLeft: " +to_string(getDistanceLeft());
-
-    return str;
+    return 
+    "volunteerID: "+to_string(getId())+"\n"+
+    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
+    "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
+    "OrdersLeft: "+ "No Limit" +"\n";
 }
 
 //-----------------class LimitedDriverVolunteer------------------
@@ -231,8 +231,10 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order) {
 } // Assign distanceLeft to order's distance and decrease ordersLeft
 
 string LimitedDriverVolunteer::toString() const {
-    string strg = DriverVolunteer::toString() +
-    "ordersLeft: "+ to_string(getNumOrdersLeft()) +"\n" +
-    "maxOrders: "+ to_string(getMaxOrders())+ "\n" ;
+    return "volunteerId: "+to_string(getId())+"\n"+
+    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
+    "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
+    "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
 }
 

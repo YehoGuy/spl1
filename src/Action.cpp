@@ -1,4 +1,6 @@
 #include "../include/Action.h"
+#include "../include/Volunteer.h"
+#include "../include/WareHouse.h"
 #include <iostream>
 
 //----------BaseAction----------
@@ -21,6 +23,10 @@ void BaseAction::error(string errorMsg) {
 
 string BaseAction::getErrorMsg() const {
     return errorMsg;
+}
+
+string BaseAction::getStrStatus() const{
+    return (getStatus() == ActionStatus::COMPLETED ? "COMPLETED" : "ERROR"); 
 }
 
 //----------SimulateStep----------
@@ -52,7 +58,7 @@ void AddOrder::act(WareHouse &wareHouse) {
 }
 
 string AddOrder::toString() const {
-    return "customerId: "+std::to_string(customerId);
+    return "order "+std::to_string(customerId) +" "+ getStrStatus();
 }
 
 AddOrder *AddOrder::clone() const {
@@ -89,7 +95,7 @@ AddCustomer *AddCustomer::clone() const {
 }
 
 string AddCustomer::toString() const{
-    return "customerName: "+customerName+", customerType: "+(customerType == CustomerType::Soldier ? "Soldier" : "Civilian")+", distance: "+std::to_string(distance)+", maxOrders: "+std::to_string(maxOrders);
+    return "customer "+customerName+" "+(customerType == CustomerType::Soldier ? "soldier" : "civilian")+" "+std::to_string(distance)+" "+std::to_string(maxOrders)+ " " + getStrStatus();
 }
 
 //----------PrintOrderStatus----------
@@ -138,7 +144,7 @@ PrintOrderStatus *PrintOrderStatus::clone() const {
 }
 
 string PrintOrderStatus::toString() const {
-    return "orderId: "+std::to_string(orderId);
+    return "orderStatus "+std::to_string(orderId) + " " + getStrStatus();
 }
 
 //----------PrintCustomerStatus----------
@@ -186,7 +192,7 @@ PrintCustomerStatus *PrintCustomerStatus::clone() const {
 }
 
 string PrintCustomerStatus::toString() const {
-    return "customerId: "+std::to_string(customerId);
+    return "customerStatus "+std::to_string(customerId)+ " "+ getStrStatus();
 }
 
 //----------PrintVolunteerStatus----------
@@ -196,10 +202,9 @@ void PrintVolunteerStatus::act(WareHouse &wareHouse){
     if(!wareHouse.doesVolunteerExists(volunteerId)){
         error("Volunteer doesn't exist");
     }else{
-        string s = wareHouse.getVolunteer(volunteerId).toString();//doesnt work for some reson
-        std::cout << s << std::endl;
-         //change vol to string to help
+        std::cout << (wareHouse.getVolunteer(volunteerId).toString()) << std::endl;
     }
+    complete();
 } 
 
 PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
@@ -207,7 +212,7 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
 }
 
  string PrintVolunteerStatus::toString() const {
-    return "volunteerID: " + std::to_string(volunteerId);
+    return "volunteerStatus " + std::to_string(volunteerId) +" "+ getStrStatus();
  }
 //----------PrintActionsLog----------
     PrintActionsLog::PrintActionsLog(): BaseAction(){}
@@ -216,10 +221,11 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
         for(BaseAction* action : wareHouse.getActions()){
             std::cout << action->toString() << std::endl;
         }
+        complete();
     }  
 
     string PrintActionsLog::toString() const {
-        return ""; //what do we need to write here?
+        return "log"; 
     }
 //----------Close----------
     Close::Close() :BaseAction(){}
@@ -240,13 +246,7 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
             ", OrderStatus: Completed" << std::endl;
         }
 
-        for(Volunteer* v : warehouse.getVolunteers()){
-            delete v;
-        }
-
-        for(Customer* c : warehouse.getCustomers()){
-            delete c;
-        }
+        warehouse.close();
     }
 
     Close* Close::clone() const{
@@ -254,11 +254,13 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     }
 
     string Close::toString() const {
-        return ""; //what do we need to write here?
+        return "close"; //what do we need to write here?
     }
 //----------BackupWareHouse----------
 
     BackupWareHouse::BackupWareHouse() : BaseAction(){}
+    
+    extern WareHouse* backup;
 
     void BackupWareHouse::act(WareHouse &wareHouse){
         backup = new WareHouse(wareHouse);
@@ -270,19 +272,18 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
      }
 
      string Close::toString() const {
-        return ""; //what do we need to write here?
+        return "backup"; //what do we need to write here?
     }
 //----------RestoreWareHouse----------
     RestoreWareHouse::RestoreWareHouse() : BaseAction(){}
 
     void RestoreWareHouse::act(WareHouse &wareHouse){
         if(backup == nullptr){
-            error("Backup is not avalible");
+            error("No backup available");
         }else{
             wareHouse = (*backup);
         }
        
-        
     }
 
      RestoreWareHouse * RestoreWareHouse::clone() const {
@@ -290,5 +291,5 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
      }
 
      string Close::toString() const {
-        return ""; //what do we need to write here?
+        return "restor"; //what do we need to write here?
     }

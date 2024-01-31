@@ -26,6 +26,7 @@ class BaseAction{
         void complete();
         void error(string errorMsg);
         string getErrorMsg() const;
+        string getStrStatus() const;
 
     private:
         string errorMsg;
