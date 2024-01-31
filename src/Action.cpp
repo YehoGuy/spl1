@@ -282,6 +282,11 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
         complete();
     }  
 
+    PrintActionsLog * PrintActionsLog::clone() const{
+        return new PrintActionsLog(*this);
+    }
+    
+
     string PrintActionsLog::toString() const {
         return "log"; 
     }
