@@ -4,6 +4,8 @@
 
 #include "Order.h"
 #include "Customer.h"
+#include "Volunteer.h"
+#include "Action.h"
 
 class BaseAction;
 class Volunteer;
@@ -26,7 +28,6 @@ class WareHouse {
         void open();
         //--added for actions(Guy)--
         bool doesCustomerExist(int customerId) const;
-        Customer& getCustomerById(int customerId) const;
         void addCustomer(Customer* customer);
         bool doesOrderExist(int orderId) const; //search
         int assignCustomerId();
@@ -56,6 +57,9 @@ class WareHouse {
         int volunteerCounter; //For assigning unique volunteer IDs
         //--added for actions(Guy)--
         int orderCounter; //For assigning unique order IDs
+        Order* removePendingOrder(int orderId);
+        Order* removeInProcessOrder(int orderId);
+
 
         //from the moodle forum - customers and orders are never deleted, volunteers do.
         //cant access a vector at id because assignId might was called without inserting accordingly?

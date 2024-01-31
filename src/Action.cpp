@@ -52,7 +52,7 @@ void SimulateStep::act(WareHouse &wareHouse){
 
         for (Volunteer * v : wareHouse.getVolunteers()){
             if(v->getHasJustFinished()){
-                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId()));
+                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId())); //not true
             }
         }
 
@@ -81,11 +81,11 @@ void AddOrder::act(WareHouse &wareHouse) {
     if(!wareHouse.doesCustomerExist(customerId)){
         error("Cannot place this order");
     }
-    else if(!wareHouse.getCustomerById(customerId).canMakeOrder()){
+    else if(!wareHouse.getCustomer(customerId).canMakeOrder()){
         error("Cannot place this order");
     }else{
         int orderId = wareHouse.assignOrderId();
-        Customer& customer = wareHouse.getCustomerById(customerId);
+        Customer& customer = wareHouse.getCustomer(customerId);
         int distance = customer.getCustomerDistance();
         Order* order = new Order(orderId, customerId, distance);
         if(customer.addOrder(orderId) == -1){
@@ -195,7 +195,7 @@ void PrintCustomerStatus::act(WareHouse& warehouse){
     if(!warehouse.doesCustomerExist(customerId)){
         error("Customer doesn't exist");
     }else{
-        Customer& customer = warehouse.getCustomerById(customerId);
+        Customer& customer = warehouse.getCustomer(customerId);
         std::cout << "CustomerID: " << customer.getId() << std::endl;
         for(int orderId : customer.getOrdersIds()){
             std::cout << "OrderID: " << orderId << std::endl;
