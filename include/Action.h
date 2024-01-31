@@ -56,7 +56,7 @@ class AddOrder : public BaseAction {
 };
 
 
-class AddCustomer : public BaseAction {
+class AddCustomer : public BaseAction { //every action needs to add itself to the actions log
     public:
         AddCustomer(const string &customerName, const string &customerType, int distance, int maxOrders);
         void act(WareHouse &wareHouse) override;

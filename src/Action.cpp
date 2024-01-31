@@ -35,34 +35,51 @@ SimulateStep::SimulateStep(int numOfSteps) :BaseAction(), numOfSteps(numOfSteps)
 
 void SimulateStep::act(WareHouse &wareHouse){
     for(int i =0; i< numOfSteps; i++){
+
+        //iterate on all of the orders in the pending list
+        //and handle accordingly, either assign a collector or a driver
         for(Order * o : wareHouse.getPendingOrders()){
             for(Volunteer * v: wareHouse.getVolunteers()){
                 if(v->canTakeOrder(*o)){
                     v->acceptOrder(*o);
                     o->changeStatus();
-                    wareHouse.mooveOrder(*o);
+                    if(o->getStatus() == OrderStatus::COLLECTING){
+                        wareHouse.pickedUpByCollector(o->getId());
+                    }else if(o->getStatus() == OrderStatus::DELIVERING){
+                        wareHouse.pickedUpByDriver(o->getId());
+                    }
+                    }
                     break;
                 }
             }
-        }
-
+        
+        //perform a step for each volunteer
         for(Volunteer * v: wareHouse.getVolunteers()){
                 v->step();
         }
 
+        //check if any volunteer finished his order
+        //and if so handle accordingly
         for (Volunteer * v : wareHouse.getVolunteers()){
             if(v->getHasJustFinished()){
-                wareHouse.mooveOrder(wareHouse.getOrder(v->getCompletedOrderId()));
+                if(wareHouse.getOrder(v->getCompletedOrderId()).getStatus() == OrderStatus::COLLECTING){
+                    wareHouse.finishedCollecting(v->getCompletedOrderId());
+                }
+                else if(wareHouse.getOrder(v->getCompletedOrderId()).getStatus() == OrderStatus::DELIVERING){
+                    wareHouse.finishedDelivering(v->getCompletedOrderId());
+                }
+                
             }
         }
 
+        //delete limited volunteers who reached limit
         for (Volunteer * v : wareHouse.getVolunteers()){
             if(!v->hasOrdersLeft()){
                 wareHouse.deleteVolunteer(v->getId());
             }
         }
 
-    }// num of steps that the func is doing
+    }
 }
 
 string SimulateStep::toString() const{
@@ -81,11 +98,11 @@ void AddOrder::act(WareHouse &wareHouse) {
     if(!wareHouse.doesCustomerExist(customerId)){
         error("Cannot place this order");
     }
-    else if(!wareHouse.getCustomerById(customerId).canMakeOrder()){
+    else if(!wareHouse.getCustomer(customerId).canMakeOrder()){
         error("Cannot place this order");
     }else{
         int orderId = wareHouse.assignOrderId();
-        Customer& customer = wareHouse.getCustomerById(customerId);
+        Customer& customer = wareHouse.getCustomer(customerId);
         int distance = customer.getCustomerDistance();
         Order* order = new Order(orderId, customerId, distance);
         if(customer.addOrder(orderId) == -1){
@@ -195,7 +212,7 @@ void PrintCustomerStatus::act(WareHouse& warehouse){
     if(!warehouse.doesCustomerExist(customerId)){
         error("Customer doesn't exist");
     }else{
-        Customer& customer = warehouse.getCustomerById(customerId);
+        Customer& customer = warehouse.getCustomer(customerId);
         std::cout << "CustomerID: " << customer.getId() << std::endl;
         for(int orderId : customer.getOrdersIds()){
             std::cout << "OrderID: " << orderId << std::endl;
