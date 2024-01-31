@@ -1,11 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
-
+class Action;
 #include "Order.h"
 #include "Customer.h"
 #include "Volunteer.h"
-#include "Action.h"
 
 class BaseAction;
 class Volunteer;
