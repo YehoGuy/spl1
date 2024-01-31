@@ -135,11 +135,11 @@ AddCustomer::AddCustomer(const string& customerName, const string& customerType,
 void AddCustomer::act(WareHouse &wareHouse){
     int customerId = wareHouse.assignCustomerId();
     Customer* customer;
-    switch(customerType){
-        case CustomerType::Soldier:
+    switch((int)customerType){
+        case 0:
             customer = new SoldierCustomer(customerId, customerName, distance, maxOrders);
             break;
-        case CustomerType::Civilian:
+        case 1:
             customer = new CivilianCustomer(customerId, customerName, distance, maxOrders);
             break;
     }
@@ -165,18 +165,18 @@ void PrintOrderStatus::act(WareHouse& warehouse){
     }else{
         Order& order = warehouse.getOrder(orderId);
         std::cout << "OrderId: " << order.getId() << std::endl;
-        switch (order.getStatus())
+        switch ((int)order.getStatus())
         {
-        case OrderStatus::PENDING:
+        case 0:
             std::cout << "OrderStatus: PENDING" << std::endl;
             break;
-        case OrderStatus::COLLECTING:
+        case 1:
             std::cout << "OrderStatus: COLLECTING" << std::endl;
             break;
-        case OrderStatus::DELIVERING:
+        case 2:
             std::cout << "OrderStatus: DELIVERING" << std::endl;
             break;
-        case OrderStatus::COMPLETED:
+        case 3:
             std::cout << "OrderStatus: COMPLETED" << std::endl;
             break;
         default:
@@ -220,18 +220,18 @@ void PrintCustomerStatus::act(WareHouse& warehouse){
                 std::cout << "Order doesn't exist in warehouse" << std::endl;
             }else{
                 Order& order = warehouse.getOrder(orderId);
-                switch (order.getStatus())
+                switch ((int)order.getStatus())
                 {
-                case OrderStatus::PENDING:
+                case 0:
                     std::cout << "OrderStatus: PENDING" << std::endl;
                     break;
-                case OrderStatus::COLLECTING:
+                case 1:
                     std::cout << "OrderStatus: COLLECTING" << std::endl;
                     break;
-                case OrderStatus::DELIVERING:
+                case 2:
                     std::cout << "OrderStatus: DELIVERING" << std::endl;
                     break;
-                case OrderStatus::COMPLETED:
+                case 3:
                     std::cout << "OrderStatus: COMPLETED" << std::endl;
                     break;
                 default:
@@ -327,8 +327,8 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
         return new BackupWareHouse(*this);
  
      }
-
-     string Close::toString() const {
+    //string toString() const override;
+     string BackupWareHouse::toString() const {
         return "backup"; //what do we need to write here?
     }
 //----------RestoreWareHouse----------
@@ -347,6 +347,6 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
         return new RestoreWareHouse(*this);
      }
 
-     string Close::toString() const {
-        return "restor"; //what do we need to write here?
+     string RestoreWareHouse::toString() const {
+        return "restore"; //what do we need to write here?
     }

@@ -86,7 +86,7 @@ void CollectorVolunteer::acceptOrder(const Order &order) {
 
 string CollectorVolunteer::toString() const{  
     return "volunteerID: "+to_string(getId())+"\n"+
-    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
     "OrdersLeft: "+ "No Limit" +"\n";
@@ -104,7 +104,7 @@ LimitedCollectorVolunteer * LimitedCollectorVolunteer::clone() const{
 }
 
 bool LimitedCollectorVolunteer::hasOrdersLeft() const {
-    return getNumOrdersLeft !=0;
+    return getNumOrdersLeft() !=0;
 }
 
 
@@ -127,7 +127,7 @@ int LimitedCollectorVolunteer::getNumOrdersLeft() const{
 
 string LimitedCollectorVolunteer::toString() const{
     return "volunteerID: "+to_string(getId())+"\n"+
-    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
     "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
@@ -203,7 +203,7 @@ void DriverVolunteer::step() {
 string DriverVolunteer::toString() const {
     return 
     "volunteerID: "+to_string(getId())+"\n"+
-    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
     "OrdersLeft: "+ "No Limit" +"\n";
@@ -243,7 +243,7 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order) {
 
 string LimitedDriverVolunteer::toString() const {
     return "volunteerId: "+to_string(getId())+"\n"+
-    "isBusy: "+ (isBusy ? "True" : "False")+"\n"+
+    "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
     "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
