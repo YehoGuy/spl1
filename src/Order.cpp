@@ -16,15 +16,15 @@ int Order::getDriverId() const{ return driverId; }
 OrderStatus Order::getStatus() const{ return status; }
 
 void Order::changeStatus(){
-    switch (getStatus())
+    switch ((int) getStatus())
     {
-    case OrderStatus::PENDING:
+    case  0:
         status = OrderStatus::COLLECTING;
         break;
-    case OrderStatus::COLLECTING:
+    case 1:
         status = OrderStatus::DELIVERING;
         break;
-    case OrderStatus::DELIVERING:
+    case 2:
         status = OrderStatus::COMPLETED;
         break;
     default:
@@ -38,18 +38,18 @@ int Order::getDistance() const {
 
 const string Order::toString() const{
     string status_str = "";
-    switch (status)
+    switch ((int)status)
     {
-    case OrderStatus::PENDING:
+    case 0:
         status_str = "PENDING";
         break;
-    case OrderStatus::COLLECTING:
+    case 1:
         status_str = "COLLECTING";
         break;
-    case OrderStatus::DELIVERING:
+    case 2:
         status_str = "DELIVERING";
         break;
-    case OrderStatus::COMPLETED:
+    case 3:
         status_str = "COMPLETED";
         break;
     }
