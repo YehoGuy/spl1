@@ -63,7 +63,7 @@ const string Order::toString() const{
     return str;
 }
 
-string& Order::stringStatus(){
+string Order::stringStatus(){
     string s;
     switch ((int)status)
     {

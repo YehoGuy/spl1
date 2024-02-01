@@ -17,7 +17,10 @@ int Customer::getMaxOrders() const{ return maxOrders; }
 
 int Customer::getNumOrders() const{ return ordersId.size(); }
 
-bool Customer::canMakeOrder() const{ return ordersId.size() < maxOrders; }
+bool Customer::canMakeOrder() const{ 
+    bool can = (unsigned)ordersId.size() < (unsigned)maxOrders;
+    return can; 
+    }
 
 const vector<int>& Customer::getOrdersIds() const{ return ordersId; }
 

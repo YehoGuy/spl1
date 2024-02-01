@@ -89,9 +89,10 @@ string CollectorVolunteer::toString() const{
     "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
-    "OrdersLeft: "+ "No Limit" +"\n";
+    "OrdersLeft: "+ "No Limit";
 
 }
+
 
 //-----------------class LimitedCollectorVolunteer------------------
 
@@ -131,9 +132,8 @@ string LimitedCollectorVolunteer::toString() const{
     "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getTimeLeft() == 0  ? "None" : to_string(getTimeLeft())) +"\n"+
-    "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
+    "OrdersLeft: "+ to_string(getNumOrdersLeft());
 }
-
 //-----------------class DriverVolunteer------------------
 
 DriverVolunteer::DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep) 
@@ -204,7 +204,7 @@ string DriverVolunteer::toString() const {
     "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
-    "OrdersLeft: "+ "No Limit" +"\n";
+    "OrdersLeft: "+ "No Limit" ;
 }
 
 //-----------------class LimitedDriverVolunteer------------------
@@ -244,6 +244,6 @@ string LimitedDriverVolunteer::toString() const {
     "isBusy: "+ (isBusy() ? "True" : "False")+"\n"+
     "OrderId: "+(!isBusy() ? "None": to_string(getActiveOrderId()))+"\n"+ 
     "TimeLeft: "+ (getDistanceLeft() == 0  ? "None" : to_string(getDistanceLeft())) +"\n"+
-    "OrdersLeft: "+ to_string(getNumOrdersLeft()) +"\n";
+    "OrdersLeft: "+ to_string(getNumOrdersLeft());
 }
 

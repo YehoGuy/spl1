@@ -30,9 +30,11 @@ class Order {
         int getDistance() const;
         //added for step
         void changeStatus();
-        string& stringStatus();
+        string stringStatus();
 
         Order * clone();
+
+        virtual ~Order() = default;
 
     private:
         const int id;

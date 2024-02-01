@@ -27,7 +27,14 @@ string BaseAction::getErrorMsg() const {
 }
 
 string BaseAction::getStrStatus() const{
-    return (getStatus() == ActionStatus::COMPLETED ? "COMPLETED" : "ERROR"); 
+    bool isCom = getStatus() == ActionStatus::COMPLETED;
+    string com = "COMPLETED";
+    string error = "ERROR";
+    if(isCom){
+        return com;
+    } else{
+        return error;
+    }
 }
 
 //----------SimulateStep----------
@@ -84,6 +91,7 @@ void SimulateStep::act(WareHouse &wareHouse){
         }
 
     }
+    complete();
 }
 
 string SimulateStep::toString() const{
@@ -299,12 +307,12 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     void Close::act(WareHouse &warehouse){
         for(Order* o : warehouse.getInProcessOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: "+ o->stringStatus() << std::endl;
+            ", OrderStatus: " + o->stringStatus()<< std::endl;
         }
 
         for(Order* o : warehouse.getPendingOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: " + o-> stringStatus() << std::endl;
+            ", OrderStatus: " + o->stringStatus()<< std::endl;
         }
 
         for(Order* o : warehouse.getCompletedOrders()){
@@ -330,6 +338,7 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
 
     void BackupWareHouse::act(WareHouse &wareHouse){
         backup = new WareHouse(wareHouse);
+        complete();
     }
 
      BackupWareHouse * BackupWareHouse::clone() const {
@@ -338,7 +347,7 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
      }
     //string toString() const override;
      string BackupWareHouse::toString() const {
-        return "backup"; //what do we need to write here?
+        return "backup " + getStrStatus(); //what do we need to write here?
     }
 //----------RestoreWareHouse----------
     RestoreWareHouse::RestoreWareHouse() : BaseAction(){}
@@ -348,7 +357,10 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
             error("No backup available");
         }else{
             wareHouse = (*backup);
+            complete();
         }
+        
+
        
     }
 
@@ -357,5 +369,5 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
      }
 
      string RestoreWareHouse::toString() const {
-        return "restore"; //what do we need to write here?
+        return "restore " + getStrStatus(); //what do we need to write here?
     }

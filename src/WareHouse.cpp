@@ -27,6 +27,7 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
             {
                 AddCustomer* addCustomer = new AddCustomer(words[1], words[2], std::stoi(words[3]), std::stoi(words[4]));
                 addCustomer->act(*this);
+                delete addCustomer;
             }
             if(words[0]=="volunteer")
             {
@@ -71,7 +72,7 @@ void WareHouse::start() {
     while (isOpen)
     {
         string input;
-        BaseAction* action;
+        BaseAction* action = nullptr;
         std::getline(std::cin, input);
         std::istringstream iss(input);
 
@@ -84,6 +85,7 @@ void WareHouse::start() {
         word = line[0];
         
         if(word == "step"){
+            action = nullptr;
             action = new SimulateStep(std::stoi(line[1]));
             
         }else if( word == "order"){
@@ -116,13 +118,13 @@ void WareHouse::start() {
         }
         else{
             printf("Invalid input\n");
+            action = nullptr;
         }
 
         if(action != nullptr){
             action->act((*this));
             actionsLog.push_back(action);
         }
-        
     }
 }
 
@@ -237,7 +239,7 @@ int WareHouse::assignOrderId() {
 
 
 Order* WareHouse::removePendingOrder(int orderId) {
-    for (int i = 0; i < pendingOrders.size(); i++) {
+    for (int i = 0; (unsigned) i < (unsigned) pendingOrders.size(); i++) {
         if (pendingOrders[i]->getId() == orderId) {
             Order* order = pendingOrders[i];
             pendingOrders.erase(pendingOrders.begin() + i);
@@ -249,7 +251,7 @@ Order* WareHouse::removePendingOrder(int orderId) {
 
 
 Order* WareHouse::removeInProcessOrder(int orderId) {
-    for (int i = 0; i < inProcessOrders.size(); i++) {
+    for (int i = 0; (unsigned) i <(unsigned) inProcessOrders.size(); i++) {
         if (inProcessOrders[i]->getId() == orderId) {
             Order* order = inProcessOrders[i];
             inProcessOrders.erase(inProcessOrders.begin() + i);
@@ -262,7 +264,7 @@ Order* WareHouse::removeInProcessOrder(int orderId) {
 //-----------------added for actions(Yonatan)-----------------
 
 void WareHouse::deleteVolunteer(int volID) {
-    for (int i = 0; i < volunteers.size(); i++) {
+    for (int i = 0; (unsigned) i < (unsigned) volunteers.size(); i++) {
         if (volunteers[i]->getId() == volID) {
             delete volunteers[i];
             volunteers.erase(volunteers.begin() + i);
@@ -327,20 +329,7 @@ void WareHouse::finishedDelivering(int orderId) {
 
 
 //rule of 5
-/*bool isOpen;
-        vector<BaseAction*> actionsLog;
-        vector<Volunteer*> volunteers;
-        vector<Order*> pendingOrders;
-        vector<Order*> inProcessOrders;
-        vector<Order*> completedOrders;
-        vector<Customer*> customers;
-        int customerCounter; //For assigning unique customer IDs
-        int volunteerCounter; //For assigning unique volunteer IDs
-        //--added for actions(Guy)--
-        int orderCounter; //For assigning unique order IDs
-      */
 
-//copy constractor
 WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), customerCounter(other.customerCounter), 
     volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter), 
     actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(){
@@ -587,16 +576,3 @@ WareHouse& WareHouse::operator=(WareHouse&& other){
     }
     return *this;
 }
-
-
-///creation test:
-/*
-void WareHouse::creationTest() const{
-    for(Volunteer* v : volunteers){
-        std::cout << v->toString() << std::endl;
-    }
-    for(Customer* c : customers){
-        std::cout << "customer: " <<std::to_string(c->getId()) << "  " << c->getName() << std::endl;
-    }
-}
-*/

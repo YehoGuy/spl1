@@ -25,6 +25,7 @@ class Volunteer {
         virtual Volunteer* clone() const = 0; //Return a copy of the volunteer
         
         bool getHasJustFinished() const;
+        virtual ~Volunteer() = default;
 
     protected:
         int completedOrderId; //Initialized to NO_ORDER if no order has been completed yet
@@ -92,6 +93,7 @@ class DriverVolunteer: public Volunteer {
         string toString() const override;
         void setDistanceLeft(int newDisLeft); 
 
+
     private:
         const int maxDistance; // The maximum distance of ANY order the volunteer can take
         const int distancePerStep; // The distance the volunteer does in one step
@@ -109,6 +111,7 @@ class LimitedDriverVolunteer: public DriverVolunteer {
         bool canTakeOrder(const Order &order) const override; // Signal if the volunteer is not busy, the order is within the maxDistance.
         void acceptOrder(const Order &order) override; // Assign distanceLeft to order's distance and decrease ordersLeft
         string toString() const override;
+
 
     private:
         const int maxOrders; // The number of orders the volunteer can process in the whole simulation
