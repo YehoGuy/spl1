@@ -57,8 +57,8 @@ class WareHouse {
         WareHouse (const WareHouse & other);
         ~WareHouse();
         WareHouse& operator=(const WareHouse& other);
-        WareHouse(WareHouse&& other) noexcept;
-        WareHouse& operator=(WareHouse&& other) noexcept;
+        WareHouse(WareHouse&& other);
+        WareHouse& operator=(WareHouse&& other);
 
 
     private:
