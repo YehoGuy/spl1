@@ -30,6 +30,7 @@ class Order {
         int getDistance() const;
         //added for step
         void changeStatus();
+        string& stringStatus();
 
         Order * clone();
 

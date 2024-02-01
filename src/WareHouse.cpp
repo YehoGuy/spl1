@@ -56,14 +56,13 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
                 }
                 
             }
-            // Process the words as needed
+            
         }
     }
 
     file.close();
+    //this->creationTest();
 }
-
-
 
 
 void WareHouse::start() {
@@ -86,47 +85,42 @@ void WareHouse::start() {
         
         if(word == "step"){
             action = new SimulateStep(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if( word == "order"){
             action = new AddOrder(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "customer"){
             action = new AddCustomer(line[1], line[2],std::stoi(line[3]),std::stoi(line[4]));
-            action->act((*this));
-            actionsLog.push_back(action);   
+            
         }else if(word == "orderStatus"){
             action = new PrintOrderStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "customerStatus"){
             action = new PrintCustomerStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "volunteerStatus"){
             action = new PrintVolunteerStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "log"){
             action = new PrintActionsLog();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "close"){
             action = new Close();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "backup"){
             action = new BackupWareHouse();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "restore"){
             action = new RestoreWareHouse();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }
         else{
             printf("Invalid input\n");
+        }
+
+        if(action != nullptr){
+            action->act((*this));
+            actionsLog.push_back(action);
         }
         
     }
@@ -136,7 +130,7 @@ void WareHouse::addOrder(Order* order) {
     pendingOrders.push_back(order);
 }
 
-void WareHouse::addAction(BaseAction* action) { //we need to add actions into actionslog
+void WareHouse::addAction(BaseAction* action) { 
     actionsLog.push_back(action);
 }
 
@@ -182,7 +176,7 @@ const vector<BaseAction*>& WareHouse::getActions() const {
 }
 
 void WareHouse::close() {
-    isOpen = false; //??
+    isOpen = false; 
 }
 
 void WareHouse::open() {
@@ -241,6 +235,7 @@ int WareHouse::assignOrderId() {
     return id;
 }
 
+
 Order* WareHouse::removePendingOrder(int orderId) {
     for (int i = 0; i < pendingOrders.size(); i++) {
         if (pendingOrders[i]->getId() == orderId) {
@@ -251,6 +246,7 @@ Order* WareHouse::removePendingOrder(int orderId) {
     }
     throw std::invalid_argument("removePendingOrder: Order not found");
 }
+
 
 Order* WareHouse::removeInProcessOrder(int orderId) {
     for (int i = 0; i < inProcessOrders.size(); i++) {
@@ -344,8 +340,11 @@ void WareHouse::finishedDelivering(int orderId) {
         int orderCounter; //For assigning unique order IDs
       */
 
+//copy constractor
 WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), customerCounter(other.customerCounter), 
-    volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter) {
+    volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter), 
+    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(){
+    //clone other's data
     if(this != &other ){
         for(BaseAction * action : other.actionsLog){
             actionsLog.push_back(action->clone());
@@ -373,29 +372,37 @@ WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), customerC
     }       
 }
 
-
+//destructor
 WareHouse::~WareHouse(){
     for (BaseAction* action : actionsLog) {
-            delete action;
-        }
-        for (Volunteer* volunteer : volunteers) {
-            delete volunteer;
-        }
-        for (Order* order : pendingOrders) {
-            delete order;
-        }
-        for (Order* order : inProcessOrders) {
-            delete order;
-        }
-        for (Order* order : completedOrders) {
-            delete order;
-        }
-        for (Customer* customer : customers) {
-            delete customer;
-        }
+        delete action;
+    }
+    for (Volunteer* volunteer : volunteers) {
+        delete volunteer;
+    }
+    for (Order* order : pendingOrders) {
+        delete order;
+    }
+    for (Order* order : inProcessOrders) {
+        delete order;
+    }
+    for (Order* order : completedOrders) {
+        delete order;
+    }
+    for (Customer* customer : customers) {
+        delete customer;
+    }
+
+    //clear vectors
+    actionsLog.clear();
+    volunteers.clear();
+    pendingOrders.clear();
+    inProcessOrders.clear();
+    completedOrders.clear();
+    customers.clear();
 }
 
-
+//copy assignement operator
 WareHouse& WareHouse::operator=(const WareHouse& other){
     if(this != &other ){
 
@@ -404,6 +411,7 @@ WareHouse& WareHouse::operator=(const WareHouse& other){
         volunteerCounter = other.volunteerCounter; 
         orderCounter =other.orderCounter; 
         
+        //delete our old data
         for (BaseAction* action : actionsLog) {
             delete action;
         }
@@ -422,8 +430,16 @@ WareHouse& WareHouse::operator=(const WareHouse& other){
         for (Customer* customer : customers) {
             delete customer;
         }
+
+        //clear our vectors from old pointers
+        actionsLog.clear();
+        volunteers.clear();
+        pendingOrders.clear();
+        inProcessOrders.clear();
+        completedOrders.clear();
+        customers.clear();
     
-    
+        //copy new data
         for(BaseAction * action : other.actionsLog){
             actionsLog.push_back(action->clone());
         }
@@ -451,41 +467,53 @@ WareHouse& WareHouse::operator=(const WareHouse& other){
     return *this;
 }
 
-WareHouse::WareHouse(WareHouse&& other) noexcept : isOpen(other.isOpen), customerCounter(other.customerCounter)
-, volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter) , customers(other.customers), 
-    completedOrders(other.completedOrders), inProcessOrders(other.inProcessOrders), pendingOrders(other.pendingOrders),volunteers(other.volunteers),
-    actionsLog(other.actionsLog) {
+//move constractor
+WareHouse::WareHouse(WareHouse&& other) : isOpen(other.isOpen), customerCounter(other.customerCounter)
+, volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter),
+    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers()  {
 
     if(this != &other ){
-        for(int i =0; i< other.actionsLog.size(); i++){
-            other.actionsLog[i] = nullptr;
+
+        //steal from other:
+        for(BaseAction* action : other.actionsLog){
+            BaseAction* p = action;
+            actionsLog.push_back(p);
+            action = nullptr;
+        }
+        for(Volunteer* v : other.volunteers){
+            Volunteer* p = v;
+            volunteers.push_back(p);
+            v = nullptr;
+        }
+        for(Order* o  : other.pendingOrders){
+            Order* p = o;
+            pendingOrders.push_back(p);
+            o = nullptr;
+        }
+        for(Order* o : other.inProcessOrders){
+            Order* p = o;
+            inProcessOrders.push_back(p);
+            o = nullptr;
+        }
+        for(Order* o  : other.completedOrders){
+            Order* p = o;
+            completedOrders.push_back(p);
+            o = nullptr;
+        }
+        for(Customer * c : other.customers){
+            Customer* p = c;
+            customers.push_back(p);
+            c = nullptr;
         }
 
-        for(int i =0; i< other.volunteers.size(); i++){
-            other.volunteers[i] = nullptr;
-        }
 
-        for(int i =0; i< other.pendingOrders.size(); i++){
-            other.pendingOrders[i] = nullptr;
-        }
-
-        for(int i =0; i< other.inProcessOrders.size(); i++){
-            other.inProcessOrders[i] = nullptr;
-        }
-
-        for(int i =0; i< other.completedOrders.size(); i++){
-            other.completedOrders[i] = nullptr;
-        }
-
-        for(int i =0; i< other.customers.size(); i++){
-            other.actionsLog[i] = nullptr;
-        }
     }
 }
 
-WareHouse& WareHouse::operator=(WareHouse&& other) noexcept{ 
+//move assignement operator
+WareHouse& WareHouse::operator=(WareHouse&& other){ 
     if(this != &other ){
-        
+        //delete our old data
         for (BaseAction* action : actionsLog) {
             delete action;
         }
@@ -505,6 +533,16 @@ WareHouse& WareHouse::operator=(WareHouse&& other) noexcept{
             delete customer;
         }
 
+        //clear our vectors from old pointers
+        actionsLog.clear();
+        volunteers.clear();
+        pendingOrders.clear();
+        inProcessOrders.clear();
+        completedOrders.clear();
+        customers.clear();
+
+        //steal from other:
+
         isOpen =other.isOpen;
         customerCounter = other.customerCounter;
         volunteerCounter = other.volunteerCounter; 
@@ -516,31 +554,49 @@ WareHouse& WareHouse::operator=(WareHouse&& other) noexcept{
         volunteers =other.volunteers;
         actionsLog =other.actionsLog;
 
-
-        for(int i =0; i< other.actionsLog.size(); i++){
-            other.actionsLog[i] = nullptr;
+        for(BaseAction* action : other.actionsLog){
+            BaseAction* p = action;
+            actionsLog.push_back(p);
+            action = nullptr;
         }
-
-        for(int i =0; i< other.volunteers.size(); i++){
-            other.volunteers[i] = nullptr;
+        for(Volunteer* v : other.volunteers){
+            Volunteer* p = v;
+            volunteers.push_back(p);
+            v = nullptr;
         }
-
-        for(int i =0; i< other.pendingOrders.size(); i++){
-            other.pendingOrders[i] = nullptr;
+        for(Order* o  : other.pendingOrders){
+            Order* p = o;
+            pendingOrders.push_back(p);
+            o = nullptr;
         }
-
-        for(int i =0; i< other.inProcessOrders.size(); i++){
-            other.inProcessOrders[i] = nullptr;
+        for(Order* o : other.inProcessOrders){
+            Order* p = o;
+            inProcessOrders.push_back(p);
+            o = nullptr;
         }
-
-        for(int i =0; i< other.completedOrders.size(); i++){
-            other.completedOrders[i] = nullptr;
+        for(Order* o  : other.completedOrders){
+            Order* p = o;
+            completedOrders.push_back(p);
+            o = nullptr;
         }
-
-        for(int i =0; i< other.customers.size(); i++){
-            other.actionsLog[i] = nullptr;
+        for(Customer * c : other.customers){
+            Customer* p = c;
+            customers.push_back(p);
+            c = nullptr;
         }
     }
-
     return *this;
 }
+
+
+///creation test:
+/*
+void WareHouse::creationTest() const{
+    for(Volunteer* v : volunteers){
+        std::cout << v->toString() << std::endl;
+    }
+    for(Customer* c : customers){
+        std::cout << "customer: " <<std::to_string(c->getId()) << "  " << c->getName() << std::endl;
+    }
+}
+*/
