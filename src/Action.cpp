@@ -51,8 +51,8 @@ void SimulateStep::act(WareHouse &wareHouse){
                         o->setDriverId(v->getId());
                         wareHouse.pickedUpByDriver(o->getId());
                     }
-                    }
                     break;
+                    }
                 }
             }
         
@@ -69,6 +69,7 @@ void SimulateStep::act(WareHouse &wareHouse){
                     wareHouse.finishedCollecting(v->getCompletedOrderId());
                 }
                 else if(wareHouse.getOrder(v->getCompletedOrderId()).getStatus() == OrderStatus::DELIVERING){
+                    wareHouse.getOrder(v->getCompletedOrderId()).setStatus(OrderStatus::COMPLETED);
                     wareHouse.finishedDelivering(v->getCompletedOrderId());
                 }
                 
@@ -290,7 +291,7 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     
 
     string PrintActionsLog::toString() const {
-        return "log"; 
+        return "log " + getStrStatus(); 
     }
 //----------Close----------
     Close::Close() :BaseAction(){}
@@ -298,12 +299,12 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     void Close::act(WareHouse &warehouse){
         for(Order* o : warehouse.getInProcessOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: Collecting" << std::endl;
+            ", OrderStatus: "<< o->stringStatus() << std::endl;
         }
 
         for(Order* o : warehouse.getPendingOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: Pending" << std::endl;
+            ", OrderStatus: " << o-> stringStatus() << std::endl;
         }
 
         for(Order* o : warehouse.getCompletedOrders()){

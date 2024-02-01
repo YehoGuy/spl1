@@ -60,6 +60,9 @@ class WareHouse {
         WareHouse(WareHouse&& other);
         WareHouse& operator=(WareHouse&& other);
 
+        //test: remove:
+        void creationTest() const;
+
 
     private:
         bool isOpen;

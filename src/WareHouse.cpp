@@ -56,14 +56,13 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
                 }
                 
             }
-            // Process the words as needed
+            
         }
     }
 
     file.close();
+    //this->creationTest();
 }
-
-
 
 
 void WareHouse::start() {
@@ -86,47 +85,42 @@ void WareHouse::start() {
         
         if(word == "step"){
             action = new SimulateStep(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if( word == "order"){
             action = new AddOrder(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "customer"){
             action = new AddCustomer(line[1], line[2],std::stoi(line[3]),std::stoi(line[4]));
-            action->act((*this));
-            actionsLog.push_back(action);   
+            
         }else if(word == "orderStatus"){
             action = new PrintOrderStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "customerStatus"){
             action = new PrintCustomerStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "volunteerStatus"){
             action = new PrintVolunteerStatus(std::stoi(line[1]));
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "log"){
             action = new PrintActionsLog();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "close"){
             action = new Close();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "backup"){
             action = new BackupWareHouse();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }else if(word == "restore"){
             action = new RestoreWareHouse();
-            action->act((*this));
-            actionsLog.push_back(action);
+            
         }
         else{
             printf("Invalid input\n");
+        }
+
+        if(action != nullptr){
+            action->act((*this));
+            actionsLog.push_back(action);
         }
         
     }
@@ -136,7 +130,7 @@ void WareHouse::addOrder(Order* order) {
     pendingOrders.push_back(order);
 }
 
-void WareHouse::addAction(BaseAction* action) { //we need to add actions into actionslog
+void WareHouse::addAction(BaseAction* action) { 
     actionsLog.push_back(action);
 }
 
@@ -182,7 +176,7 @@ const vector<BaseAction*>& WareHouse::getActions() const {
 }
 
 void WareHouse::close() {
-    isOpen = false; //??
+    isOpen = false; 
 }
 
 void WareHouse::open() {
@@ -241,6 +235,7 @@ int WareHouse::assignOrderId() {
     return id;
 }
 
+
 Order* WareHouse::removePendingOrder(int orderId) {
     for (int i = 0; i < pendingOrders.size(); i++) {
         if (pendingOrders[i]->getId() == orderId) {
@@ -251,6 +246,7 @@ Order* WareHouse::removePendingOrder(int orderId) {
     }
     throw std::invalid_argument("removePendingOrder: Order not found");
 }
+
 
 Order* WareHouse::removeInProcessOrder(int orderId) {
     for (int i = 0; i < inProcessOrders.size(); i++) {
@@ -591,3 +587,16 @@ WareHouse& WareHouse::operator=(WareHouse&& other){
     }
     return *this;
 }
+
+
+///creation test:
+/*
+void WareHouse::creationTest() const{
+    for(Volunteer* v : volunteers){
+        std::cout << v->toString() << std::endl;
+    }
+    for(Customer* c : customers){
+        std::cout << "customer: " <<std::to_string(c->getId()) << "  " << c->getName() << std::endl;
+    }
+}
+*/

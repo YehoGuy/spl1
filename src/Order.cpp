@@ -63,6 +63,25 @@ const string Order::toString() const{
     return str;
 }
 
+string& Order::stringStatus(){
+    string s;
+    switch ((int)status)
+    {
+    case 0:
+        s = "PENDING";
+        break;
+    case 1:
+        s = "COLLECTING";
+        break;
+    case 2:
+        s = "DELIVERING";
+        break;
+    case 3:
+        s = "COMPLETED";
+        break;
+    }
+    return s;
+}
 
 Order * Order::clone(){
     return new Order(*this);

@@ -69,6 +69,7 @@
         "memory_resource": "cpp",
         "numeric": "cpp",
         "random": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "iomanip": "cpp"
     }
 }
