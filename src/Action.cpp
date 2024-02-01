@@ -299,12 +299,12 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     void Close::act(WareHouse &warehouse){
         for(Order* o : warehouse.getInProcessOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: "<< o->stringStatus() << std::endl;
+            ", OrderStatus: "+ o->stringStatus() << std::endl;
         }
 
         for(Order* o : warehouse.getPendingOrders()){
             std::cout << "OrderID: " + std::to_string(o->getId()) +", CustomerID: " +std::to_string(o->getCustomerId())+
-            ", OrderStatus: " << o-> stringStatus() << std::endl;
+            ", OrderStatus: " + o-> stringStatus() << std::endl;
         }
 
         for(Order* o : warehouse.getCompletedOrders()){
