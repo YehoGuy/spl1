@@ -62,6 +62,13 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "functional": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "bit": "cpp"
     }
 }

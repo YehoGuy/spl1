@@ -45,8 +45,10 @@ void SimulateStep::act(WareHouse &wareHouse){
                     v->acceptOrder(*o);
                     o->changeStatus();
                     if(o->getStatus() == OrderStatus::COLLECTING){
+                        o->setCollectorId(v->getId());
                         wareHouse.pickedUpByCollector(o->getId());
                     }else if(o->getStatus() == OrderStatus::DELIVERING){
+                        o->setDriverId(v->getId());
                         wareHouse.pickedUpByDriver(o->getId());
                     }
                     }

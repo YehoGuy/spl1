@@ -1,6 +1,6 @@
 #
 
-all: clean compile link check_leaks
+all: clean compile link
 
 
 

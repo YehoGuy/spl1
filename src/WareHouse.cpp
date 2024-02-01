@@ -13,33 +13,42 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
     string line;
     std::ifstream file(configFilePath);
     while (getline (file, line)) {
-        std::istringstream iss(line);
+        if(line != ""){
+            std::istringstream iss(line);
             std::vector<string> words;
             string word;
+         
             while (iss >> word) {
                 words.push_back(word);
             }
+            
+            
             if(words[0]=="customer")
             {
                 AddCustomer* addCustomer = new AddCustomer(words[1], words[2], std::stoi(words[3]), std::stoi(words[4]));
+                addCustomer->act(*this);
             }
             if(words[0]=="volunteer")
             {
                 if(words[2] == "collector")
                 {
                     CollectorVolunteer *collectorVolunteer = new CollectorVolunteer(assignVolunteerId(), words[1], std::stoi(words[3]));
+                    volunteers.push_back(collectorVolunteer);
                 }
                 else if(words[2] == "limited_collector")
                 {
                     LimitedCollectorVolunteer *limitedCollectorVolunteer = new LimitedCollectorVolunteer(assignVolunteerId(), words[1], std::stoi(words[3]), std::stoi(words[4]));
+                    volunteers.push_back(limitedCollectorVolunteer);
                 }
                 else if(words[2] == "driver")
                 {
                     DriverVolunteer *driverVolunteer = new DriverVolunteer(assignVolunteerId(), words[1],std::stoi(words[3]),std::stoi(words[4]));
+                    volunteers.push_back(driverVolunteer);
                 }
                 else if(words[2] == "limited_driver")
                 {
                     LimitedDriverVolunteer *limitedDriverVolunteer = new LimitedDriverVolunteer(assignVolunteerId(), words[1],std::stoi(words[3]),std::stoi(words[4]),std::stoi(words[5]));
+                    volunteers.push_back(limitedDriverVolunteer);
                 }
                 else
                 {
@@ -48,6 +57,7 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
                 
             }
             // Process the words as needed
+        }
     }
 
     file.close();
@@ -57,6 +67,7 @@ isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actions
 
 
 void WareHouse::start() {
+    open();
     std::cout << "Warehouse is open!" << std::endl;
     while (isOpen)
     {
@@ -176,7 +187,6 @@ void WareHouse::close() {
 
 void WareHouse::open() {
     isOpen = true; 
-    this -> start();
 }
 
 //-----------------added for actions(Guy)-----------------
