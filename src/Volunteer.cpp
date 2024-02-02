@@ -4,8 +4,8 @@ using std::to_string;
 
 //-----------------class Volunteer------------------
 
-Volunteer::Volunteer(int id, const string &name) : id(id) ,name(name) 
-,completedOrderId(NO_ORDER), activeOrderId(NO_ORDER), hasJustFinished(false){}
+Volunteer::Volunteer(int id, const string &name) : 
+completedOrderId(NO_ORDER), activeOrderId(NO_ORDER), hasJustFinished(false), id(id) ,name(name) {}
 int Volunteer::getId() const{ 
     return id;
 }
@@ -28,6 +28,10 @@ bool Volunteer::isBusy() const{
 
 bool Volunteer::getHasJustFinished() const{
     return hasJustFinished;
+}
+
+void Volunteer::setJustFinishedFalse(){
+    hasJustFinished = false;
 }
 
 
@@ -151,7 +155,7 @@ int DriverVolunteer::getMaxDistance() const{
 }
         
 int DriverVolunteer::getDistancePerStep() const{
-    return distanceLeft;
+    return distancePerStep;
 } 
 
 void DriverVolunteer::setDistanceLeft(int newDisLeft){
@@ -161,7 +165,7 @@ void DriverVolunteer::setDistanceLeft(int newDisLeft){
 }
 
 bool DriverVolunteer::decreaseDistanceLeft(){
-    if(distanceLeft > distancePerStep){
+    if(distanceLeft >= distancePerStep){
         distanceLeft = distanceLeft - distancePerStep;
     }else{
         distanceLeft =0;

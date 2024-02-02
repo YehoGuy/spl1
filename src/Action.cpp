@@ -6,7 +6,7 @@
 
 //----------BaseAction----------
 
-BaseAction::BaseAction(){}
+BaseAction::BaseAction() : errorMsg(""), status(ActionStatus::COMPLETED){}
 
 ActionStatus BaseAction::getStatus() const {
     return status;
@@ -79,7 +79,7 @@ void SimulateStep::act(WareHouse &wareHouse){
                     wareHouse.getOrder(v->getCompletedOrderId()).setStatus(OrderStatus::COMPLETED);
                     wareHouse.finishedDelivering(v->getCompletedOrderId());
                 }
-                
+                v->setJustFinishedFalse();
             }
         }
 
@@ -180,27 +180,27 @@ void PrintOrderStatus::act(WareHouse& warehouse){
         switch ((int)order.getStatus())
         {
         case 0:
-            std::cout << "OrderStatus: PENDING" << std::endl;
+            std::cout << "OrderStatus: Pending" << std::endl;
             break;
         case 1:
-            std::cout << "OrderStatus: COLLECTING" << std::endl;
+            std::cout << "OrderStatus: Collecting" << std::endl;
             break;
         case 2:
-            std::cout << "OrderStatus: DELIVERING" << std::endl;
+            std::cout << "OrderStatus: Delivering" << std::endl;
             break;
         case 3:
-            std::cout << "OrderStatus: COMPLETED" << std::endl;
+            std::cout << "OrderStatus: Completed" << std::endl;
             break;
         default:
             break;
         }
         std::cout << "CustomerID: " << order.getCustomerId() << std::endl;
         if(order.getCollectorId() == -1)
-            {std::cout << "Collector: " << "NONE" << std::endl;}
+            {std::cout << "Collector: " << "None" << std::endl;}
         else 
             {std::cout << "Collector: " << order.getCollectorId() << std::endl;}
         if(order.getDriverId() == -1)
-            {std::cout << "Driver: " << "NONE" << std::endl;}
+            {std::cout << "Driver: " << "None" << std::endl;}
         else 
             {std::cout << "Driver: " << order.getDriverId() << std::endl;}
         
@@ -235,16 +235,16 @@ void PrintCustomerStatus::act(WareHouse& warehouse){
                 switch ((int)order.getStatus())
                 {
                 case 0:
-                    std::cout << "OrderStatus: PENDING" << std::endl;
+                    std::cout << "OrderStatus: Pending" << std::endl;
                     break;
                 case 1:
-                    std::cout << "OrderStatus: COLLECTING" << std::endl;
+                    std::cout << "OrderStatus: Collecting" << std::endl;
                     break;
                 case 2:
-                    std::cout << "OrderStatus: DELIVERING" << std::endl;
+                    std::cout << "OrderStatus: Delivering" << std::endl;
                     break;
                 case 3:
-                    std::cout << "OrderStatus: COMPLETED" << std::endl;
+                    std::cout << "OrderStatus: Completed" << std::endl;
                     break;
                 default:
                     break;

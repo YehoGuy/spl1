@@ -7,8 +7,8 @@
 //-----------------class WareHouse-----------------
 
 WareHouse::WareHouse(const string& configFilePath): 
-isOpen(false), customerCounter(0), volunteerCounter(0), orderCounter(0), actionsLog(), volunteers(), pendingOrders(),
- inProcessOrders(), completedOrders(), customers()
+isOpen(false), actionsLog(), volunteers(), pendingOrders(),
+ inProcessOrders(), completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCounter(0)
 {
     string line;
     std::ifstream file(configFilePath);
@@ -330,9 +330,9 @@ void WareHouse::finishedDelivering(int orderId) {
 
 //rule of 5
 
-WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), customerCounter(other.customerCounter), 
-    volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter), 
-    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(){
+WareHouse::WareHouse (const WareHouse & other) : isOpen(other.isOpen), 
+    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(), customerCounter(other.customerCounter), 
+    volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter){
     //clone other's data
     if(this != &other ){
         for(BaseAction * action : other.actionsLog){
@@ -456,10 +456,12 @@ WareHouse& WareHouse::operator=(const WareHouse& other){
     return *this;
 }
 
+
 //move constractor
-WareHouse::WareHouse(WareHouse&& other) : isOpen(other.isOpen), customerCounter(other.customerCounter)
-, volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter),
-    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers()  {
+WareHouse::WareHouse(WareHouse&& other) : isOpen(other.isOpen),
+    actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers()
+    , customerCounter(other.customerCounter)
+, volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter)  {
 
     if(this != &other ){
 

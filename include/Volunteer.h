@@ -27,6 +27,8 @@ class Volunteer {
         bool getHasJustFinished() const;
         virtual ~Volunteer() = default;
 
+        void setJustFinishedFalse();
+
     protected:
         int completedOrderId; //Initialized to NO_ORDER if no order has been completed yet
         int activeOrderId; //Initialized to NO_ORDER if no order is being processed
