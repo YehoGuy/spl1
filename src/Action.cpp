@@ -337,6 +337,9 @@ PrintVolunteerStatus *PrintVolunteerStatus::clone() const{
     extern WareHouse* backup;
 
     void BackupWareHouse::act(WareHouse &wareHouse){
+        if(backup != nullptr){
+            delete backup;
+        }
         backup = new WareHouse(wareHouse);
         complete();
     }
