@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <exception>
 
 //-----------------class WareHouse-----------------
 
@@ -84,6 +85,7 @@ void WareHouse::start() {
 
         word = line[0];
         
+        try{
         if(word == "step"){
             action = nullptr;
             action = new SimulateStep(std::stoi(line[1]));
@@ -117,7 +119,11 @@ void WareHouse::start() {
             
         }
         else{
-            printf("Invalid input\n");
+            std::cout << "Invalid command" << std::endl;
+            action = nullptr;
+        }
+        }catch(std::exception& e){
+            std::cout << "Invalid command" << std::endl;  
             action = nullptr;
         }
 
