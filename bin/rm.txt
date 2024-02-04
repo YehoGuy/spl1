@@ -1,0 +1,6 @@
+hello!
+we added this txt file because for some reason,
+git deleted our bin folder if it was empty 
+each time we pushed/pulled our code.
+
+this txt file prevents it.
